@@ -1,0 +1,636 @@
+{
+    "tables": {
+        "roles": {
+            "columns": [
+                {
+                    "name": "role_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "role_name",
+                    "type": "VARCHAR(50) UNIQUE NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "description",
+                    "type": "TEXT",
+                    "nullable": true
+                },
+                {
+                    "name": "created_at",
+                    "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": []
+        },
+        "users": {
+            "columns": [
+                {
+                    "name": "user_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "username",
+                    "type": "VARCHAR(100) UNIQUE NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "password_hash",
+                    "type": "VARCHAR(255) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "full_name",
+                    "type": "VARCHAR(200)",
+                    "nullable": true
+                },
+                {
+                    "name": "email",
+                    "type": "VARCHAR(200)",
+                    "nullable": true
+                },
+                {
+                    "name": "is_active",
+                    "type": "BOOLEAN DEFAULT TRUE",
+                    "nullable": true
+                },
+                {
+                    "name": "created_at",
+                    "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "nullable": true
+                },
+                {
+                    "name": "updated_at",
+                    "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": []
+        },
+        "user_roles": {
+            "columns": [
+                {
+                    "name": "user_role_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "user_id",
+                    "type": "INTEGER NOT NULL REFERENCES users(user_id)",
+                    "nullable": false
+                },
+                {
+                    "name": "role_id",
+                    "type": "INTEGER NOT NULL REFERENCES roles(role_id)",
+                    "nullable": false
+                },
+                {
+                    "name": "assigned_at",
+                    "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": [
+                "REFERENCES users(user_id)",
+                "REFERENCES roles(role_id)"
+            ]
+        },
+        "user_sessions": {
+            "columns": [
+                {
+                    "name": "session_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "user_id",
+                    "type": "INTEGER NOT NULL REFERENCES users(user_id)",
+                    "nullable": false
+                },
+                {
+                    "name": "token_hash",
+                    "type": "VARCHAR(255) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "ip_address",
+                    "type": "VARCHAR(45)",
+                    "nullable": true
+                },
+                {
+                    "name": "user_agent",
+                    "type": "TEXT",
+                    "nullable": true
+                },
+                {
+                    "name": "created_at",
+                    "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "nullable": true
+                },
+                {
+                    "name": "expires_at",
+                    "type": "TIMESTAMP NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "is_active",
+                    "type": "BOOLEAN DEFAULT TRUE",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": [
+                "REFERENCES users(user_id)"
+            ]
+        },
+        "audit_logs": {
+            "columns": [
+                {
+                    "name": "log_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "user_id",
+                    "type": "INTEGER REFERENCES users(user_id)",
+                    "nullable": true
+                },
+                {
+                    "name": "username",
+                    "type": "VARCHAR(100)",
+                    "nullable": true
+                },
+                {
+                    "name": "user_role",
+                    "type": "VARCHAR(50)",
+                    "nullable": true
+                },
+                {
+                    "name": "action",
+                    "type": "VARCHAR(100) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "details",
+                    "type": "TEXT",
+                    "nullable": true
+                },
+                {
+                    "name": "status",
+                    "type": "VARCHAR(20) DEFAULT 'SUCCESS'",
+                    "nullable": true
+                },
+                {
+                    "name": "ip_address",
+                    "type": "VARCHAR(45)",
+                    "nullable": true
+                },
+                {
+                    "name": "created_at",
+                    "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": [
+                "REFERENCES users(user_id)"
+            ]
+        },
+        "chat_sessions": {
+            "columns": [
+                {
+                    "name": "chat_session_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "user_id",
+                    "type": "INTEGER NOT NULL REFERENCES users(user_id)",
+                    "nullable": false
+                },
+                {
+                    "name": "title",
+                    "type": "VARCHAR(255) DEFAULT 'New Chat'",
+                    "nullable": true
+                },
+                {
+                    "name": "is_active",
+                    "type": "BOOLEAN DEFAULT TRUE",
+                    "nullable": true
+                },
+                {
+                    "name": "created_at",
+                    "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": [
+                "REFERENCES users(user_id)"
+            ]
+        },
+        "chat_messages": {
+            "columns": [
+                {
+                    "name": "chat_message_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "chat_session_id",
+                    "type": "INTEGER NOT NULL REFERENCES chat_sessions(chat_session_id)",
+                    "nullable": false
+                },
+                {
+                    "name": "role",
+                    "type": "VARCHAR(20) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "content",
+                    "type": "TEXT NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "created_at",
+                    "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": [
+                "REFERENCES chat_sessions(chat_session_id)"
+            ]
+        },
+        "customers": {
+            "columns": [
+                {
+                    "name": "customer_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "first_name",
+                    "type": "VARCHAR(100) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "last_name",
+                    "type": "VARCHAR(100) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "date_of_birth",
+                    "type": "DATE NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "address",
+                    "type": "TEXT",
+                    "nullable": true
+                },
+                {
+                    "name": "email",
+                    "type": "VARCHAR(200) UNIQUE NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "phone",
+                    "type": "VARCHAR(50)",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": []
+        },
+        "accounts": {
+            "columns": [
+                {
+                    "name": "account_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "account_number",
+                    "type": "VARCHAR(50) UNIQUE NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "account_type",
+                    "type": "VARCHAR(50) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "balance",
+                    "type": "NUMERIC(15, 2) DEFAULT 0.00",
+                    "nullable": true
+                },
+                {
+                    "name": "opening_date",
+                    "type": "DATE DEFAULT CURRENT_DATE",
+                    "nullable": true
+                },
+                {
+                    "name": "branch_id",
+                    "type": "INTEGER",
+                    "nullable": true
+                },
+                {
+                    "name": "customer_id",
+                    "type": "INTEGER NOT NULL REFERENCES customers(customer_id)",
+                    "nullable": false
+                }
+            ],
+            "foreign_keys": [
+                "REFERENCES customers(customer_id)"
+            ]
+        },
+        "branches": {
+            "columns": [
+                {
+                    "name": "branch_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "branch_name",
+                    "type": "VARCHAR(100) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "location",
+                    "type": "VARCHAR(100) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "region",
+                    "type": "VARCHAR(100) NOT NULL",
+                    "nullable": false
+                }
+            ],
+            "foreign_keys": []
+        },
+        "cards": {
+            "columns": [
+                {
+                    "name": "card_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "customer_id",
+                    "type": "INTEGER NOT NULL REFERENCES customers(customer_id)",
+                    "nullable": false
+                },
+                {
+                    "name": "linked_account_id",
+                    "type": "INTEGER NOT NULL REFERENCES accounts(account_id)",
+                    "nullable": false
+                },
+                {
+                    "name": "card_type",
+                    "type": "VARCHAR(20) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "masked_card_number",
+                    "type": "VARCHAR(50) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "expiry_date",
+                    "type": "DATE NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "status",
+                    "type": "VARCHAR(50) DEFAULT 'ACTIVE'",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": [
+                "REFERENCES customers(customer_id)",
+                "REFERENCES accounts(account_id)"
+            ]
+        },
+        "card_lifecycle": {
+            "columns": [
+                {
+                    "name": "lifecycle_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "card_id",
+                    "type": "INTEGER NOT NULL REFERENCES cards(card_id)",
+                    "nullable": false
+                },
+                {
+                    "name": "event",
+                    "type": "VARCHAR(50) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "event_date",
+                    "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": [
+                "REFERENCES cards(card_id)"
+            ]
+        },
+        "card_transactions": {
+            "columns": [
+                {
+                    "name": "card_transaction_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "card_id",
+                    "type": "INTEGER NOT NULL REFERENCES cards(card_id)",
+                    "nullable": false
+                },
+                {
+                    "name": "merchant_id",
+                    "type": "INTEGER NOT NULL REFERENCES merchants(merchant_id)",
+                    "nullable": false
+                },
+                {
+                    "name": "amount",
+                    "type": "NUMERIC(15, 2) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "currency",
+                    "type": "VARCHAR(10) DEFAULT 'USD'",
+                    "nullable": true
+                },
+                {
+                    "name": "transaction_date",
+                    "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "nullable": true
+                },
+                {
+                    "name": "authorization_status",
+                    "type": "VARCHAR(50) DEFAULT 'PENDING'",
+                    "nullable": true
+                },
+                {
+                    "name": "settlement_status",
+                    "type": "VARCHAR(50) DEFAULT 'PENDING'",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": [
+                "REFERENCES cards(card_id)",
+                "REFERENCES merchants(merchant_id)"
+            ]
+        },
+        "employees": {
+            "columns": [
+                {
+                    "name": "employee_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "first_name",
+                    "type": "VARCHAR(100) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "last_name",
+                    "type": "VARCHAR(100) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "position",
+                    "type": "VARCHAR(100)",
+                    "nullable": true
+                },
+                {
+                    "name": "branch_id",
+                    "type": "INTEGER",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": []
+        },
+        "external_accounts": {
+            "columns": [
+                {
+                    "name": "external_account_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "account_holder_name",
+                    "type": "VARCHAR(200) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "bank_name",
+                    "type": "VARCHAR(100) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "iban",
+                    "type": "VARCHAR(100)",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": []
+        },
+        "merchants": {
+            "columns": [
+                {
+                    "name": "merchant_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "merchant_name",
+                    "type": "VARCHAR(200) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "category_code",
+                    "type": "VARCHAR(50)",
+                    "nullable": true
+                },
+                {
+                    "name": "location",
+                    "type": "VARCHAR(200)",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": []
+        },
+        "transactions": {
+            "columns": [
+                {
+                    "name": "transaction_id",
+                    "type": "SERIAL PRIMARY KEY",
+                    "nullable": false
+                },
+                {
+                    "name": "transaction_date",
+                    "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "nullable": true
+                },
+                {
+                    "name": "transaction_type",
+                    "type": "VARCHAR(50) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "amount",
+                    "type": "NUMERIC(15, 2) NOT NULL",
+                    "nullable": false
+                },
+                {
+                    "name": "description",
+                    "type": "TEXT",
+                    "nullable": true
+                },
+                {
+                    "name": "status",
+                    "type": "VARCHAR(50) DEFAULT 'PENDING'",
+                    "nullable": true
+                },
+                {
+                    "name": "sender_account_id",
+                    "type": "INTEGER NOT NULL REFERENCES accounts(account_id)",
+                    "nullable": false
+                },
+                {
+                    "name": "receiver_account_id",
+                    "type": "INTEGER REFERENCES accounts(account_id)",
+                    "nullable": true
+                },
+                {
+                    "name": "external_account_id",
+                    "type": "INTEGER REFERENCES external_accounts(external_account_id)",
+                    "nullable": true
+                },
+                {
+                    "name": "employee_id",
+                    "type": "INTEGER REFERENCES employees(employee_id)",
+                    "nullable": true
+                },
+                {
+                    "name": "card_id",
+                    "type": "INTEGER REFERENCES cards(card_id)",
+                    "nullable": true
+                }
+            ],
+            "foreign_keys": [
+                "REFERENCES accounts(account_id)",
+                "REFERENCES accounts(account_id)",
+                "REFERENCES external_accounts(external_account_id)",
+                "REFERENCES employees(employee_id)",
+                "REFERENCES cards(card_id)"
+            ]
+        }
+    }
+}
