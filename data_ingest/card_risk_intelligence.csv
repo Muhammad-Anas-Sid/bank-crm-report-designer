@@ -1,0 +1,8 @@
+card_id,risk_score,merchant_category_risk,flagged_reason,last_scan_date
+1,12,Low,None,2026-02-15
+2,85,High,Multiple high-value international transactions,2026-03-01
+3,45,Medium,Frequent small transactions in short period,2026-02-28
+4,5,Low,None,2026-01-20
+5,98,Critical,Identity theft suspicion,2026-03-02
+10,60,High,Unusual geographic location,2026-02-10
+15,30,Low,Regular spending patterns,2026-03-01

@@ -1,0 +1,7 @@
+[
+  {"merchant_name": "FoodPanda Pakistan", "security_score": 92, "pci_compliant": true, "last_audit": "2025-11-20"},
+  {"merchant_name": "Daraz.pk", "security_score": 88, "pci_compliant": true, "last_audit": "2026-01-15"},
+  {"merchant_name": "Shell Fuel Station", "security_score": 65, "pci_compliant": false, "last_audit": "2025-06-10"},
+  {"merchant_name": "Hyperstar", "security_score": 95, "pci_compliant": true, "last_audit": "2026-02-01"},
+  {"merchant_name": "Jazz Telecom", "security_score": 82, "pci_compliant": true, "last_audit": "2025-12-01"}
+]

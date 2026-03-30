@@ -152,3 +152,25 @@ class ChatService:
             raise e
         finally:
             session.close()
+
+    @staticmethod
+    def delete_session(chat_session_id: int):
+        """Delete a chat session and all its messages."""
+        session = get_db_session()
+        try:
+            # Delete messages first
+            session.query(ChatMessage).filter(
+                ChatMessage.chat_session_id == chat_session_id
+            ).delete()
+
+            # Delete the session itself
+            session.query(ChatSession).filter(
+                ChatSession.chat_session_id == chat_session_id
+            ).delete()
+
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e
+        finally:
+            session.close()

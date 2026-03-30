@@ -4,7 +4,7 @@ Analytics Agent — generates business insights from query results.
 
 import os
 import pandas as pd
-from openai import OpenAI
+from groq import Groq
 from backend.config.settings import Config
 
 
@@ -13,17 +13,12 @@ class AnalyticsAgent:
 
     def __init__(self):
         groq_key = Config.GROQ_API_KEY
-        openai_key = Config.OPENAI_API_KEY
 
         if groq_key:
-            self.client = OpenAI(
+            self.client = Groq(
                 api_key=groq_key,
-                base_url="https://api.groq.com/openai/v1",
             )
             self.model = "llama-3.3-70b-versatile"
-        elif openai_key:
-            self.client = OpenAI(api_key=openai_key)
-            self.model = "gpt-3.5-turbo"
         else:
             self.client = None
             print("WARNING: AnalyticsAgent has no LLM API key configured")
@@ -34,8 +29,8 @@ class AnalyticsAgent:
 
         Must include:
         - Business summary
-        - Trend analysis
-        - Key metrics
+        - Trend analysis with accurate and precise numbers
+        - Key metrics / KPIs with formulae (if needed)
         - Recommendations
         """
         if dataframe.empty:
@@ -51,15 +46,9 @@ Analyze this dataset summary according to the instruction: "{analytics_instructi
 DATA:
 {data_summary}
 
-You MUST structure your response with these sections:
-1. **Business Summary** — 2-3 sentence overview
-2. **Key Metrics** — bullet points with specific numbers from the data
-3. **Trend Analysis** — patterns or notable observations
-4. **Recommendations** — actionable suggestions for the bank
-
 Guidelines:
 - Executive tone, professional banking language
-- Max 200-300 words total
+- Max 150-200 words total
 - Do NOT invent numbers — only use what's in the summary
 - Be specific and actionable
 - Use bullet-point format

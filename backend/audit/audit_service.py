@@ -59,8 +59,11 @@ class AuditService:
         )
 
     @staticmethod
-    def log_report_generation(user_context: dict, prompt: str, rows: int):
-        AuditService.log(user_context, "GENERATE_REPORT", {"prompt": prompt, "rows": rows})
+    def log_report_generation(user_context: dict, prompt: str, rows: int, filename: str = None):
+        details = {"prompt": prompt, "rows": rows}
+        if filename:
+            details["filename"] = filename
+        AuditService.log(user_context, "GENERATE_REPORT", details)
 
     @staticmethod
     def log_chat_message(user_context: dict, session_id: int, message_preview: str):

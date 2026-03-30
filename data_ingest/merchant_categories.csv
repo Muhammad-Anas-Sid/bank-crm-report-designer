@@ -1,0 +1,16 @@
+merchant_id,merchant_name,category_code,category_name,location,segment
+M001,Starbucks Pakistan,5411,Grocery Stores,Lahore,Retail
+M002,Junaid Jamshed,5411,Grocery Stores,Islamabad,Retail
+M003,EasyPaisa,4812,Telecommunications,Karachi,Fintech
+M004,State Bank ATM,4121,Banks and Banking,Multiple,Banking
+M005,Hyperstar,5311,Department Stores,Karachi,Retail
+M006,Daraz Pakistan,5541,Gas Stations,Lahore,E-commerce
+M007,Pakistan Airlines,4511,Airlines,Islamabad,Travel
+M008,Aga Khan Hospital,8011,Hospitals,Karachi,Healthcare
+M009,Jazz Network,4812,Telecommunications,Islamabad,Telecom
+M010,Uber Pakistan,4121,Transportation,Multiple,Mobility
+M011,Lush Cosmetics,5411,Retail Stores,Lahore,Beauty
+M012,McDonald's,5812,Restaurants,Karachi,Food
+M013,Bookland,5942,Book Stores,Islamabad,Education
+M014,Shell Petrol,5541,Gas Stations,Multiple,Fuel
+M015,Cricket Pakistan,7999,Sports,Lahore,Entertainment

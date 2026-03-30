@@ -1,0 +1,95 @@
+Q1 2024 CARD MANAGEMENT ANALYSIS REPORT
+========================================
+
+Generated: 2024-04-15
+Period: January 1 - March 31, 2024
+
+EXECUTIVE SUMMARY
+-----------------
+Q1 2024 showed strong card portfolio growth across all segments.
+
+KEY METRICS
+-----------
+Total Active Cards: 847 cards
+Total Credit Cards: 312 cards (36.8%)
+Total Debit Cards: 535 cards (63.2%)
+
+SEGMENT BREAKDOWN
+-----------------
+Wealth Segment: 148 cards (17.5%), Avg Credit Limit: PKR 750,000
+Corporate Segment: 156 cards (18.4%), Avg Credit Limit: PKR 680,000
+Business Segment: 138 cards (16.3%), Avg Credit Limit: PKR 520,000
+SME Segment: 167 cards (19.7%), Avg Credit Limit: PKR 0 (mostly debit)
+Retail Segment: 238 cards (28.1%), Avg Credit Limit: PKR 350,000
+
+GROWTH METRICS
+--------------
+New Cards Issued (Q1): 94 cards
+Cards Activated: 89 cards
+Cards Expired: 12 cards
+Cards Blocked: 5 cards
+
+TOP PERFORMING MERCHANTS
+------------------------
+1. Daraz Pakistan - 2,847 transactions (PKR 45.2M)
+2. EasyPaisa - 1,956 transactions (PKR 28.7M)
+3. Starbucks Pakistan - 1,234 transactions (PKR 18.9M)
+4. McDonald's - 987 transactions (PKR 15.3M)
+5. Jazz Network - 756 transactions (PKR 12.1M)
+
+RECOMMENDATIONS FOR Q2
+----------------------
+1. Increase Wealth segment card limits by 15%
+2. Launch SME credit card product
+3. Improve card activation process (currently 94.7% success rate)
+4. Monitor block rate (0.6% is acceptable but could be lower)
+```
+
+### 5. `card_policies.docx` (as TXT - convert to DOCX manually if needed)
+```
+CARD MANAGEMENT POLICIES & GUIDELINES
+======================================
+
+DOCUMENT DATE: January 2024
+EFFECTIVE FROM: Q1 2024
+
+1. CARD ISSUANCE POLICY
+-----------------------
+- Credit cards can be issued to customers with credit score ≥ 700
+- Minimum annual income requirement: PKR 500,000 (Retail), PKR 2,000,000 (Corporate)
+- Maximum credit limit: PKR 5,000,000 (Individual), PKR 10,000,000 (Corporate)
+- Debit cards can be issued to all account holders with active savings/checking accounts
+
+2. CARD ACTIVATION REQUIREMENTS
+-------------------------------
+- Cards must be activated within 30 days of issuance
+- SMS verification required for activation
+- One-time PIN setting mandatory
+- Risk assessment required for cards above PKR 1,000,000 limit
+
+3. CARD STATUS MANAGEMENT
+-------------------------
+ACTIVE: Card is in use and all transactions are permitted
+BLOCKED: Card is temporarily blocked due to security concerns (can be unblocked)
+EXPIRED: Card has passed expiry date and cannot be used
+INACTIVE: Card has not been activated within 30 days and is deactivated
+
+4. TRANSACTION LIMITS
+---------------------
+Daily Limit: PKR 500,000 (Debit), PKR 1,000,000 (Credit)
+Monthly Limit: PKR 15,000,000 (Debit), PKR 25,000,000 (Credit)
+Monthly Retail Transactions: Max 200 transactions
+
+5. FRAUD PREVENTION
+-------------------
+- Declined if 3 failed attempts in 24 hours
+- Automatic block if unusual spending pattern detected
+- SMS alert for transactions above PKR 100,000
+- Email notification for all online transactions
+
+6. COMPLIANCE REQUIREMENTS
+--------------------------
+- KYC verification mandatory before issuance
+- AML screening required monthly
+- Regular fraud audits (quarterly)
+- Annual customer review mandatory

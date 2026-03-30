@@ -39,10 +39,14 @@ class Config:
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 
     # File paths
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    REPORTS_DIR = os.path.join(BASE_DIR, "generated_reports")
-    SCHEMA_METADATA_PATH = os.path.join(os.path.dirname(BASE_DIR), "config", "schema_metadata.json")
-    MIGRATIONS_DIR = os.path.join(BASE_DIR, "backend", "migrations")
+    BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    PROJECT_ROOT = os.path.dirname(BACKEND_DIR)
+    
+    BASE_DIR = BACKEND_DIR # Keeping for legacy compatibility
+    REPORTS_DIR = os.path.join(BACKEND_DIR, "generated_reports")
+    DATA_INGEST_DIR = os.path.join(PROJECT_ROOT, "data_ingest")
+    SCHEMA_METADATA_PATH = os.path.join(PROJECT_ROOT, "config", "schema_metadata.json")
+    MIGRATIONS_DIR = os.path.join(BACKEND_DIR, "migrations")
 
     # CORS
     CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")

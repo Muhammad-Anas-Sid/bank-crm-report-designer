@@ -1,102 +1,129 @@
 """
 Report Planner — orchestrates the full AI processing pipeline.
 
-User Chat → Intent Agent → Report Plan Generator → LLM JSON Structured Output
-→ Query Builder Validation → SQL Generator → Data Engine → Analytics Agent
-→ Document Generator → Generated Document Preview
+The pipeline is PURELY RAG-based:
+  IntentAgent → RAG Orchestrator → PDF
+
+The RAG system handles ALL data-fetching, query-building, 
+and now generates both the data-only report and the analysis insights.
 """
 
+import time
+import logging
 from backend.agents.intent_agent import IntentAgent
-from backend.agents.analytics_agent import AnalyticsAgent
-from backend.query_builder.query_builder import QueryBuilder
-from backend.services.data_engine import DataEngine
+from backend.rag_system.rag_orchestrator import RAGOrchestrator
 from backend.reports.document_service import DocumentService
 from backend.audit.audit_service import AuditService
-from backend.chat.chat_service import ChatService
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class ReportPlanner:
-    """Orchestrates the full report generation pipeline."""
+    """Orchestrates the full report generation pipeline using RAG exclusively."""
 
     def __init__(self):
         self.intent_agent = IntentAgent()
-        self.query_builder = QueryBuilder()
-        self.data_engine = DataEngine()
-        self.analytics_agent = AnalyticsAgent()
+        self.rag_orchestrator = RAGOrchestrator()
         self.document_service = DocumentService()
 
-    def generate_report(self, user_prompt: str, user_context: dict) -> dict:
+    def generate_report(self, user_prompt: str, user_context: dict, history: list = None) -> dict:
         """
-        Full pipeline execution:
-        1. Intent Agent → Report Plan (JSON)
-        2. Query Builder → Validated SQL
-        3. Data Engine → Pandas DataFrame
-        4. Analytics Agent → Insights
-        5. Document Generator → PDF
-
-        Returns dict with report_plan, data_preview, insights, download_link.
-        Raises ValueError on failure.
+        Executes the report pipeline:
+        1. IntentAgent extracts structured data requirements
+        2. RAG Orchestrator retrieves real data AND generates dual outputs:
+           - data_only_report (for PDF)
+           - analysis_response (for Chat)
+        3. DocumentService generates PDF using the data-only report
         """
-        # Step 1: Generate report plan
-        report_plan = self.intent_agent.generate_report_plan(user_prompt)
+        start_time = time.time()
+        pipeline_log = []
 
-        if not report_plan:
-            raise ValueError("Failed to generate report plan from LLM.")
+        try:
+            # ── Step 1: LLM Intent Extraction ──────────────────────────
+            logger.info(f"[ReportPlanner] Step 1 — Extracting intent for: {user_prompt}")
+            report_plan = self.intent_agent.generate_report_plan(user_prompt, history=history)
 
-        if isinstance(report_plan, dict) and "error" in report_plan:
-            return {"status": "error", "message": report_plan["error"]}
+            if not report_plan or "error" in report_plan:
+                return {
+                    "status": "error",
+                    "message": report_plan.get("error", "Intent extraction failed."),
+                }
 
-        # Step 2: Generate and validate SQL
-        schema = ChatService.get_schema_entities()
-        
-        # Priority 1: LLM-generated SQL
-        sql_query = report_plan.get("generated_sql")
-        
-        if sql_query:
-            print("Using LLM-generated SQL.")
-            # Still validate for safety
-            from backend.query_builder.sql_validator import SqlValidator
-            validator = SqlValidator()
-            is_valid, error = validator.validate(sql_query)
-            if not is_valid:
-                print(f"LLM SQL validation failed: {error}. Falling back to Query Builder.")
-                sql_query = self.query_builder.generate_sql(report_plan)
-        else:
-            # Priority 2: Query Builder fallback
-            print("No LLM SQL provided. Using Query Builder fallback.")
-            sql_query = self.query_builder.generate_sql(report_plan)
+            # Intent Routing (Clarify / Chat)
+            if report_plan.get("intent_type") in ("clarify", "chat"):
+                return {
+                    "status": report_plan["intent_type"],
+                    "message": report_plan.get("intent", "Please clarify your request."),
+                    "suggested_questions": report_plan.get("suggested_questions", []),
+                    "report_plan": report_plan,
+                }
 
-        # Audit the SQL
-        AuditService.log_sql_execution(user_context, sql_query)
+            pipeline_log.append(f"Intent resolved: {report_plan.get('report_title')}")
 
-        # Step 3: Execute SQL → DataFrame
-        df = self.data_engine.execute_query(sql_query, schema=schema)
+            # ── Step 2: RAG Orchestrator — retrieval & generation ──────
+            logger.info("[ReportPlanner] Step 2 — RAG Orchestrator processing...")
+            rag_result = self.rag_orchestrator.orchestrate(report_plan)
 
-        # Step 4: Generate analytics insights
-        analytics_prompt = report_plan.get("analytics_prompt", "Provide general insights on this data.")
-        insights = self.analytics_agent.generate_insights(df, analytics_prompt)
+            if rag_result.get("error"):
+                return {
+                    "status": "error",
+                    "message": f"Data retrieval failed: {rag_result['error']}",
+                    "report_plan": report_plan,
+                }
 
-        # Step 5: Generate PDF document
-        username = user_context.get("username", "unknown")
-        filename = self.document_service.generate_pdf(
-            report_plan, df, insights, user_context
-        )
+            df = rag_result.get("dataframe")
+            if df is None or df.empty:
+                return {
+                    "status": "error",
+                    "message": "No data found matching your report criteria. Try a different query.",
+                    "report_plan": report_plan,
+                }
 
-        # Audit the report generation
-        AuditService.log_report_generation(user_context, user_prompt, len(df))
+            # Extract dual outputs
+            data_only_report = rag_result.get("data_only_report", "")
+            analysis_response = rag_result.get("analysis_response", "Report generated successfully.")
+            
+            pipeline_log.append(f"Retrieved {len(df)} rows and generated analysis.")
 
-        # Build response
-        data_preview = []
-        if not df.empty:
-            # Safe NaN handling
-            safe_df = df.where(df.notna(), None)
-            data_preview = safe_df.head(5).to_dict(orient="records")
+            # ── Step 3: Document generation — PDF ──────────────────────
+            # We pass the data_only_report here so the PDF has NO AI analysis
+            logger.info("[ReportPlanner] Step 3 — Generating PDF report...")
+            filename = self.document_service.generate_pdf(
+                report_plan, df, data_only_report, user_context
+            )
 
-        return {
-            "status": "success",
-            "report_plan": report_plan,
-            "data_preview": data_preview,
-            "total_rows": len(df),
-            "insights": insights,
-            "download_link": f"/api/reports/download/{filename}",
-        }
+            total_time = time.time() - start_time
+            logger.info(f"[ReportPlanner] Pipeline finished in {total_time:.2f}s")
+
+            # Audit logging
+            AuditService.log_report_generation(
+                user_context, user_prompt, len(df), filename
+            )
+
+            return {
+                "status": "success",
+                "report_plan": report_plan,
+                "data_preview": df.head(5).to_dict(orient="records") if not df.empty else [],
+                "total_rows": len(df),
+                "insights": analysis_response, # To be shown in chat
+                "download_link": f"/api/reports/download/{filename}",
+                "sources_used": rag_result.get("sources_used", []),
+                "source_breakdown": rag_result.get("source_breakdown", {}),
+                "execution_metadata": {
+                    "source": "RAG",
+                    "time": total_time,
+                    "pipeline_log": pipeline_log,
+                },
+            }
+
+        except Exception as e:
+            logger.error(f"[ReportPlanner] Pipeline Error: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return {
+                "status": "error",
+                "message": "Internal error during report generation.",
+                "reason": str(e),
+            }

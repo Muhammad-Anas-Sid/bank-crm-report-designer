@@ -44,14 +44,13 @@ export default function Login({ onLogin }) {
       <div className="login-card">
         <div className="login-header">
           <div className="login-logo">
-            <svg viewBox="0 0 40 40" className="logo-icon">
-              <rect x="4" y="20" width="32" height="16" rx="2" fill="#0F2B46" />
-              <rect x="8" y="10" width="24" height="14" rx="2" fill="#1a4a6e" />
-              <rect x="12" y="4" width="16" height="10" rx="2" fill="#2d6a9f" />
-              <circle cx="20" cy="28" r="3" fill="#38bdf8" />
+            <svg viewBox="0 0 160 80" width="160" height="80" className="avanza-logo-large">
+              <text x="5" y="50" fontFamily="Inter, sans-serif" fontWeight="700" fontSize="42" fill="var(--accent)" letterSpacing="-1.5">avanza</text>
+              <text x="6" y="70" fontFamily="Inter, sans-serif" fontWeight="400" fontSize="12" fill="#64748b" letterSpacing="8">SOLUTIONS</text>
+              <path d="M130 20 L148 12 L142 25" fill="none" stroke="#64748b" strokeWidth="2.5" strokeLinecap="round" />
             </svg>
           </div>
-          <h1>Enterprise Bank Corp.</h1>
+          <h1>Avanza Solutions</h1>
           <p className="login-subtitle">AI Report Designer</p>
         </div>
 

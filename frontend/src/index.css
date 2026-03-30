@@ -6,36 +6,37 @@
 
 /* ─── Base Reset & Variables ─────────────────────────────────── */
 :root {
-  --bg-primary: #0a0f1a;
-  --bg-secondary: #111827;
-  --bg-tertiary: #1e293b;
-  --bg-card: #162032;
-  --bg-hover: #1e3a5f;
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-hover: #fff1f2;
 
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
 
-  --accent: #38bdf8;
-  --accent-hover: #0ea5e9;
-  --accent-glow: rgba(56, 189, 248, 0.15);
+  --accent: #a11e50;
+  --accent-hover: #881843;
+  --accent-glow: rgba(161, 30, 80, 0.1);
 
-  --success: #22c55e;
+  --success: #10b981;
   --danger: #ef4444;
   --warning: #f59e0b;
 
-  --border: #1e293b;
-  --border-active: #334155;
+  --border: #e2e8f0;
+  --border-active: #cbd5e1;
 
-  --radius: 10px;
-  --radius-sm: 6px;
-  --radius-lg: 16px;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
 
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 4px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
 
-  --transition: 150ms ease;
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --transition: 200ms ease;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -83,7 +84,7 @@ body,
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: linear-gradient(135deg, #0a0f1a 0%, #0f1b2e 40%, #162a45 100%);
+  background: radial-gradient(circle at top right, #fff1f2 0%, #f8fafc 100%);
   position: relative;
   overflow: hidden;
 }
@@ -136,7 +137,6 @@ body,
   box-shadow: var(--shadow-lg);
   position: relative;
   z-index: 1;
-  backdrop-filter: blur(20px);
 }
 
 .login-header {
@@ -190,13 +190,13 @@ body,
 }
 
 .form-group input {
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 12px 14px;
   font-size: 0.95rem;
   color: var(--text-primary);
-  transition: border-color var(--transition);
+  transition: all var(--transition);
   font-family: var(--font);
 }
 
@@ -220,8 +220,8 @@ body,
 }
 
 .login-btn {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
-  color: #0a0f1a;
+  background: var(--accent);
+  color: white;
   border: none;
   border-radius: var(--radius);
   padding: 14px;
@@ -306,10 +306,12 @@ body,
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  height: 56px;
+  height: 64px;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
+  z-index: 10;
 }
 
 .navbar-brand {
@@ -324,6 +326,22 @@ body,
 .navbar-logo {
   width: 28px;
   height: 28px;
+}
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  height: 48px;
+}
+
+.avanza-logo {
+  height: 100%;
+  width: auto;
+  max-width: 140px;
+}
+
+.avanza-logo-large {
+  max-width: 220px;
 }
 
 .navbar-user {
@@ -477,6 +495,7 @@ body,
 .chat-session-item.active {
   background: var(--bg-hover);
   border-color: var(--accent);
+  box-shadow: var(--shadow);
 }
 
 .session-title {
@@ -512,6 +531,22 @@ body,
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.history-item.clickable {
+  cursor: pointer;
+}
+
+.history-item.clickable:hover {
+  background: var(--bg-hover);
+  border: 1px solid var(--accent);
+  box-shadow: var(--shadow);
+}
+
+.history-item.active {
+  background: var(--bg-hover);
+  border: 1px solid var(--accent);
+  box-shadow: var(--shadow);
 }
 
 .history-user {
@@ -560,18 +595,13 @@ body,
   overflow: hidden;
 }
 
-.main-split {
-  display: flex;
-  width: 100%;
-  height: 100%;
-}
-
+/* ─── Chat Panel ─────────────────────────────────────────────── */
 /* ─── Chat Panel ─────────────────────────────────────────────── */
 .chat-panel {
-  width: 50%;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--border);
 }
 
 .chat-messages {
@@ -628,12 +658,14 @@ body,
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 12px 16px;
+  box-shadow: var(--shadow);
   min-width: 60px;
 }
 
 .chat-message.user .message-content {
-  background: rgba(56, 189, 248, 0.1);
-  border-color: rgba(56, 189, 248, 0.2);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
 }
 
 .message-text p {
@@ -730,7 +762,7 @@ body,
   border-radius: var(--radius-sm);
   padding: 12px 14px;
   cursor: pointer;
-  color: #0a0f1a;
+  color: white;
   transition: all var(--transition);
   display: flex;
   align-items: center;
@@ -747,9 +779,18 @@ body,
   cursor: not-allowed;
 }
 
+.chat-container-full {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .download-btn {
   margin-top: 12px;
-  background: linear-gradient(135deg, var(--success), #16a34a);
+  background: var(--accent);
   color: white;
   border: none;
   border-radius: var(--radius-sm);
@@ -759,25 +800,85 @@ body,
   cursor: pointer;
   transition: all var(--transition);
   font-family: var(--font);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .download-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 12px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 2px 12px rgba(161, 30, 80, 0.3);
+}
+
+.download-btn.secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.download-btn.secondary:hover {
+  background: var(--bg-primary);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Removal of split view elements */
+.main-split {
+  display: none;
+}
+
+.resize-handle {
+  display: none;
 }
 
 /* ─── Document Preview ───────────────────────────────────────── */
 .preview-empty,
 .preview-content {
-  width: 50%;
-  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   padding: 24px;
+  overflow: hidden;
 }
 
 .preview-empty {
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Split Pane & Resize Handle ──────────────────────────────── */
+.main-split {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.resize-handle {
+  width: 8px;
+  background: var(--bg-primary);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  cursor: col-resize;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.2s;
+  z-index: 10;
+}
+
+.resize-handle:hover,
+.resize-handle:active {
+  background: var(--accent);
+}
+
+.handle-bar {
+  width: 2px;
+  height: 24px;
+  background: var(--text-muted);
+  border-radius: 1px;
 }
 
 .preview-placeholder {
@@ -836,6 +937,7 @@ body,
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
+  box-shadow: var(--shadow);
 }
 
 .insights-box p {
@@ -853,6 +955,7 @@ body,
   overflow-x: auto;
   border-radius: var(--radius);
   border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 .data-table {
@@ -892,8 +995,8 @@ body,
 }
 
 .download-report-btn {
-  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-  color: #0a0f1a;
+  background: var(--accent);
+  color: white;
   border: none;
   border-radius: var(--radius);
   padding: 12px 24px;
@@ -902,9 +1005,222 @@ body,
   cursor: pointer;
   transition: all var(--transition);
   font-family: var(--font);
+  box-shadow: var(--shadow-md);
 }
 
 .download-report-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+}
+
+/* ─── Sidebar Collapsed State ────────────────────────────────── */
+.sidebar {
+  transition: width 0.3s ease, min-width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+  min-width: 70px;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  height: 50px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-tertiary);
+}
+
+.sidebar.collapsed .sidebar-header {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.sidebar-header h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.sidebar-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: all 0.2s;
+}
+
+.sidebar-toggle:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.icon {
+  font-size: 1.1rem;
+  margin-right: 8px;
+}
+
+.sidebar.collapsed .icon {
+  margin-right: 0;
+}
+
+/* Hide content in collapsed mode */
+.sidebar.collapsed .sidebar-heading,
+.sidebar.collapsed .new-chat-btn,
+.sidebar.collapsed .chat-session-list,
+.sidebar.collapsed .history-list,
+.sidebar.collapsed .sidebar-content-wrapper {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar-tabs {
+  flex-direction: column;
+}
+
+.sidebar.collapsed .tab-btn {
+  padding: 16px 0;
+  text-align: center;
+  border-bottom: none;
+  border-left: 3px solid transparent;
+}
+
+.sidebar.collapsed .tab-btn.active {
+  border-left-color: var(--accent);
+  border-bottom-color: transparent;
+}
+
+
+/* ─── Responsiveness ─────────────────────────────────────────── */
+
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+  .app-body {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .main-split {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .chat-panel {
+    width: 100%;
+    height: 60vh;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .preview-content,
+  .preview-empty {
+    width: 100%;
+    min-height: 500px;
+    /* Ensure space for PDF */
+    padding: 16px;
+  }
+
+  /* On mobile default to collapsed look but act as drawer overlay? 
+     For simplicity, we keep the collapsed logic consistent. */
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    /* Collapses vertically? No, sidebar usually vertical. */
+    /* Let's follow requirement: "sidebar auto-collapses on mobile" */
+  }
+
+  .sidebar.collapsed {
+    width: 60px;
+    /* Small vertical strip */
+  }
+}
+
+/* PDF Container Styles */
+.pdf-container {
+  background: #fff;
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 24px;
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* CONTEXT MENU STYLES                                         */
+/* ─────────────────────────────────────────────────────────── */
+
+.custom-context-menu {
+  position: fixed;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  min-width: 180px;
+  padding: 4px 0;
+  animation: slideIn 0.15s ease-out;
+}
+
+.context-menu-item {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #1e293b;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.context-menu-item:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.context-menu-item.danger {
+  color: #dc2626;
+}
+
+.context-menu-item.danger:hover {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.context-menu-item .icon {
+  font-size: 16px;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Make sure chat-session-item has cursor pointer on right-click */
+.chat-session-item {
+  user-select: none;
+}
+
+.chat-session-item:hover {
+  background-color: #f1f5f9;
 }

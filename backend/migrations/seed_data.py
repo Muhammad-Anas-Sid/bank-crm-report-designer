@@ -210,7 +210,8 @@ def seed_card_transactions(session):
                 merchant_id=random.choice(merchants).merchant_id,
                 amount=Decimal(str(round(random.uniform(100, 25000), 2))),
                 currency="PKR",
-                transaction_date=datetime.now() - timedelta(days=random.randint(1, 90)),
+                # Expanded range: last 500 days (covers Q2 2025)
+                transaction_date=datetime.now() - timedelta(days=random.randint(1, 500)),
                 authorization_status=random.choice(["APPROVED", "APPROVED", "APPROVED", "DECLINED"]),
                 settlement_status=random.choice(["SETTLED", "SETTLED", "PENDING"]),
             )
@@ -260,7 +261,8 @@ def seed_transactions(session):
         receiver = random.choice(accounts) if txn_type in ["CREDIT", "TRANSFER"] else None
 
         txn = Transaction(
-            transaction_date=datetime.now() - timedelta(days=random.randint(1, 120)),
+            # Expanded range: last 500 days
+            transaction_date=datetime.now() - timedelta(days=random.randint(1, 500)),
             transaction_type=txn_type,
             amount=Decimal(str(round(random.uniform(500, 100000), 2))),
             description=random.choice(descriptions),

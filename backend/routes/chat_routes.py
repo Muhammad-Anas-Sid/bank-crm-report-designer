@@ -100,25 +100,67 @@ def send_message():
             finally:
                 db_session.close()
 
-        planner = ReportPlanner()
-        result = planner.generate_report(content, user_context)
+        # Fetch session history for context-aware chat
+        raw_history = ChatService.get_session_messages(session_id)
+        history = [
+            {"role": msg["role"], "content": msg["content"]}
+            for msg in raw_history
+            if msg.get("role") in ["user", "assistant"]
+        ]
 
-        # Check if it's an error/greeting response
+        planner = ReportPlanner()
+        result = planner.generate_report(content, user_context, history=history)
+
+        # Check if it's an error response
         if result.get("status") == "error":
             ai_response = result.get("message", "I couldn't process that request.")
+            ChatService.add_message(session_id, "assistant", f"⚠️ {ai_response}")
+            return jsonify({"status": "info", "message": ai_response})
+
+        # Handle clarify/chat intent — LLM needs more info from the user
+        if result.get("status") in ("clarify", "chat"):
+            ai_response = result.get("message", "Could you be more specific about what report you need?")
+            suggested = result.get("suggested_questions", [])
+            if suggested:
+                ai_response += "\n\nHere are some things you could try:\n"
+                for q in suggested:
+                    ai_response += f"• {q}\n"
             ChatService.add_message(session_id, "assistant", ai_response)
             return jsonify({"status": "info", "message": ai_response})
 
-        # Build AI response text
+        # If status is anything other than "success", treat as error
+        if result.get("status") != "success":
+            ai_response = result.get("message") or result.get("safe_message") or "Report generation failed unexpectedly."
+            ChatService.add_message(session_id, "assistant", f"⚠️ {ai_response}")
+            return jsonify({"status": "error", "message": ai_response}), 500
+
+        # ── Build AI response text (success) ──────────────────────
         report_title = result.get("report_plan", {}).get("report_title", "Report")
         insights = result.get("insights", "")
         total_rows = result.get("total_rows", 0)
 
+        # Gather data sources used
+        sources_used = result.get("sources_used", [])
+        source_breakdown = result.get("source_breakdown", {})
+
         ai_response = (
             f"✅ **Report Generated: {report_title}**\n\n"
             f"📊 {total_rows} rows of data retrieved.\n\n"
-            f"{insights}"
+            f"{insights}\n\n"
         )
+
+        # Append data sources used
+        if sources_used:
+            ai_response += "---\n\n📂 **Data Sources Used:**\n"
+            for src in sources_used:
+                row_count = source_breakdown.get(src, "")
+                label = src.replace("_", " ").title()
+                if row_count:
+                    ai_response += f"• **{label}** — {row_count} rows\n"
+                else:
+                    ai_response += f"• **{label}**\n"
+        else:
+            ai_response += "📂 **Data Sources Used:** RAG Pipeline\n"
 
         # Save AI response
         ChatService.add_message(
@@ -127,6 +169,8 @@ def send_message():
                 "type": "report",
                 "download_link": result.get("download_link"),
                 "total_rows": total_rows,
+                "sources_used": sources_used,
+                "source_breakdown": source_breakdown,
             },
         )
 
@@ -161,5 +205,22 @@ def get_domains():
     entities = ChatService.get_schema_entities()
     return jsonify({
         "domains": domain_info,
-        "entities": entities,
     })
+
+
+@chat_bp.route("/sessions/<int:session_id>", methods=["DELETE"])
+@jwt_required
+def delete_session(session_id):
+    """Delete a chat session."""
+    user = g.current_user
+    try:
+        # Check ownership: get the session first
+        sessions = ChatService.get_user_sessions(user["user_id"])
+        if not any(s["chat_session_id"] == session_id for s in sessions):
+            return jsonify({"status": "error", "message": "Unauthorized"}), 403
+
+        ChatService.delete_session(session_id)
+        return jsonify({"status": "success", "message": "Chat session deleted"})
+    except Exception as e:
+        print(f"Error deleting chat session: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500

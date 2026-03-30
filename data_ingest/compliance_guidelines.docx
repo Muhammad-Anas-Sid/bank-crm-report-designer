@@ -1,0 +1,66 @@
+### 10. `compliance_guidelines.docx` (as TXT)
+
+TRANSACTION MANAGEMENT COMPLIANCE GUIDELINES
+=============================================
+
+EFFECTIVE DATE: January 2024
+DOCUMENT CLASS: INTERNAL USE ONLY
+
+1. ANTI-MONEY LAUNDERING (AML) REQUIREMENTS
+--------------------------------------------
+- All transactions above PKR 5,000,000 require manual review
+- Customer identification mandatory before transaction processing
+- Quarterly risk assessment for all customer accounts
+- Reporting of suspicious transactions to FIU (Financial Intelligence Unit)
+- Sanctions list screening for all international transactions
+
+2. KNOW YOUR CUSTOMER (KYC) POLICY
+----------------------------------
+- KYC verification mandatory for all transactions above PKR 1,000,000
+- Enhanced KYC for PEPs (Politically Exposed Persons)
+- Annual KYC refresh required
+- Source of funds verification for large deposits
+
+3. TRANSACTION LIMITS & CONTROLS
+---------------------------------
+Daily Transaction Limit: PKR 50,000,000
+Monthly Transaction Limit: PKR 500,000,000
+Single Transaction Limit: PKR 25,000,000
+Unusual Activity Threshold: 150% of customer's 90-day average
+
+4. FRAUD PREVENTION MEASURES
+-----------------------------
+- Real-time transaction monitoring
+- Machine learning-based anomaly detection
+- Customer verification for transactions above threshold
+- SMS confirmation for high-value transactions
+- Auto-block on suspicious patterns (3 declined attempts = 24hr block)
+
+5. REPORTING REQUIREMENTS
+-------------------------
+- Daily transaction reports to Compliance Department
+- Weekly fraud analysis reports
+- Monthly KYC compliance reports
+- Quarterly regulatory reporting to SBP
+- Annual audit by external auditors
+
+6. DISPUTE RESOLUTION
+---------------------
+- Customer disputes must be filed within 90 days
+- Investigation period: 30 days
+- Reversal processing: 3-5 business days
+- Customer notification mandatory
+
+7. DATA SECURITY & PRIVACY
+--------------------------
+- All transaction data encrypted (AES-256)
+- Access logs maintained for all transactions
+- Customer data retention: 7 years post-account closure
+- PII masking in all reports and communications
+
+8. SANCTIONS & EMBARGO COMPLIANCE
+----------------------------------
+- OFAC (Office of Foreign Assets Control) screening mandatory
+- UN Sanctions list verification
+- Pakistan's FIA sanctions list screening
+- Real-time screening for international transactions

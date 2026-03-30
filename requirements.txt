@@ -9,3 +9,5 @@ python-dotenv
 bcrypt
 PyJWT
 numpy
+sentence-transformers
+faiss-cpu

@@ -1,0 +1,6 @@
+segment_name,segment_code,customer_count,avg_balance,avg_transaction_amount,risk_profile
+Retail,RET,4850,285000,18500,LOW
+SME,SME,620,1250000,95000,MEDIUM
+Business,BIZ,380,3200000,250000,MEDIUM-HIGH
+Corporate,COR,210,8500000,650000,HIGH
+Wealth,WEA,145,15000000,1200000,HIGH
